@@ -1,26 +1,20 @@
 import * as test from 'tape';
 import bind from './';
 
-class Tested {
-	constructor (private v: number) {}
-	sum(...values: number[]) {
-		return values.reduce((prev, current) => prev + current, this.v);
+test("bind function tests", (t) => {
+	class Tested {
+		args(...args) {
+			return args;
+		}
 	}
 
-	args(...args) {
-		return args;
-	}
-}
+	const obj = new Tested();
+	const args5 = bind(obj, 'args', 5);
+	t.deepEqual(args5(), [5], 'Key is passed as first agrument');
 
-test("My first test", (t) => {
+	t.deepEqual(args5(2), [5, 2], 'Other params as passed too');
 
-	const obj = new Tested(10);
-	const sum = bind(obj, 'sum', 5);
-	t.equal(sum(), 15, 'Key is passed as first agrument');
-
-	t.equal(sum(2), 17, 'Other params as passed too');
-
-	t.equal(sum(10, 100), 125, 'Multiple params support');
+	t.deepEqual(args5(10, 100), [5, 10, 100], 'Multiple params support');
 
 	const args = bind(obj, 'args', 7);
 	t.deepEqual(args(true, 'param'), [7, true, 'param'], 'Params order');
@@ -54,10 +48,10 @@ test("My first test", (t) => {
 	t.ok(diffId1 !== diffId2, 'Bound functions with the different key are not equals.');
 
 
-	const diffObj1 = new Tested(1);
-	const diffObj2 = new Tested(2);
-	const f1 = bind(diffObj1, 'sum', 1);
-	const f2 = bind(diffObj2, 'sum', 1);
+	const diffObj1 = new Tested();
+	const diffObj2 = new Tested();
+	const f1 = bind(diffObj1, 'args', 1);
+	const f2 = bind(diffObj2, 'args', 1);
 
 	t.ok(f1 !== f2, 'Bound functions for different object are not equals.')
 
