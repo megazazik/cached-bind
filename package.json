@@ -24,9 +24,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://megazazik@bitbucket.org/megazazik/cached-bind.git"
+    "url": "https://github.com/megazazik/cached-bind.git"
   },
-  "homepage": "https://megazazik@bitbucket.org/megazazik/cached-bind",
+  "homepage": "https://github.com/megazazik/cached-bind",
   "author": "Michael Lebedev",
   "email": "megazazik@rambler.ru",
   "license": "MIT"
