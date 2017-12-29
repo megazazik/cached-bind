@@ -1,7 +1,7 @@
 # cached-bind #
 `cached-bind` is a helper to remove arrow-functions and bind from cycles in `react` component's `render` method.
 Example:
-```
+```javascript
 import * as React from 'react'
 import bind from 'cached-bind';
 
@@ -53,10 +53,10 @@ When args are changed, `cached-bind` saves them and when a wrapper function is c
 `cached-bind` has the following parameters:  
 ``bind(object, functionName, key, ...args)``  
 where:
-* object - object to which a function will be bound
-* functionName - a property name of the object which contains a function to bind
-* key - it is used to determine which cached function should be returned. If `bind` is called with the same key next time, the returned function will be the same as in the first time
-* args - arguments which will be passed to `object[functionName]` function on call
+* *object* - object to which a function will be bound
+* *functionName* - a property name of the object which contains a function to bind
+* *key* - it is used to determine which cached function should be returned. If `bind` is called with the same key next time, the returned function will be the same as in the first time
+* *args* - arguments which will be passed to `object[functionName]` function on call
 
 ## Examples
 
