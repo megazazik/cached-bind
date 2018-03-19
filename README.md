@@ -1,12 +1,16 @@
 # cached-bind #
-`cached-bind` is a helper to remove arrow-functions and bind from cycles in `react` component's `render` method.
+`cached-bind` is a helper to remove arrow-functions and bind from cycles in `react` component's `render` method. Or you can use it in any other cases when you don't want to create new functions.
 Example:
 ```javascript
 import * as React from 'react'
 import bind from 'cached-bind';
 
+function onClickSecond(index) {
+	doSomethingElse(index);
+}
+
 class SomeComponent extends React.Component {
-	private _onClick(index) {
+	_onClick(index) {
 		doSomething(index);
 	}
 
@@ -15,6 +19,10 @@ class SomeComponent extends React.Component {
 			<div>
 				{someArray.map((obj, index) => (
 					<span onClick={bind(this, '_onClick', index)} >{obj.name}</span>
+				))}
+				or
+				{someArray.map((obj, index) => (
+					<span onClick={bind(this, onClickSecond, index)} >{obj.name}</span>
 				))}
 			</div>
 		);
@@ -43,7 +51,7 @@ But sometimes you need to pass `onClickHandler` to a number of components in cyc
 `cached-bind` will help you to resolve this issue easy.
 
 ## How it works?
-When `cached-bind` is called with some key for the first time it creates a wrapper for object's original function and return it.
+When `cached-bind` is called with some key for the first time it creates a wrapper for an original function and return it.
 Next call with the same key `cached-bind` returns the same existed wrapper even if args were changed.  
 ``bind(obj, 'doSomething', 1, true) === bind(obj, 'doSomething', 1, false)``  
 It create a new wrapper for every call with a new key.
@@ -51,18 +59,32 @@ When args are changed, `cached-bind` saves them and when a wrapper function is c
 
 ## API
 `cached-bind` has the following parameters:  
-``bind(object, functionName, key, ...args)``  
+``bind(object, func, key, ...args)``  
 where:
 * *object* - object to which a function will be bound
-* *functionName* - a property name of the object which contains a function to bind
+* *func* - a property name of the object which contains a function to bind or a function to bind
 * *key* - it is used to determine which cached function should be returned. If `bind` is called with the same key next time, the returned function will be the same as in the first time
 * *args* - arguments which will be passed to `object[functionName]` function on call
 
 ## Examples
 
 ```javascript
-const bound = bind(object, 'doSomething', 1, true, {id: 1});
-bound();
+class C1 {
+	doSomething() {
+		...
+	}
+}
+const obj1 = new C1();
+const bound1 = bind(obj1, 'doSomething', 1, true, {id: 1});
+bound1();
+
+// or
+
+function doSomething() {
+	...
+}
+const bound2 = bind(obj2, doSomething, 1, true, {id: 1});
+bound2();
 ```
 In this case the original `doSomething` function will get the following parameters: `[true, {id: 1}]`.
 
