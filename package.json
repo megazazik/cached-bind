@@ -1,6 +1,6 @@
 {
   "name": "cached-bind",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Library for excluding function generations on React's render function call",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
