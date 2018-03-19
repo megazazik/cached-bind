@@ -1,41 +1,27 @@
-const cachedFunctionFieldName = typeof Symbol === 'function' ? Symbol('cached-bind') : '__cachedBindFieldName__';
+import bindByName from './byName';
+import bindByFunction from './byFunction';
+
 export default function bind<O extends object, K extends keyof O>(
 	obj: O,
 	fieldName: keyof O,
 	key: string | number | symbol,
 	...args
+): (...args) => any;
+export default function bind<F extends Function>(
+	obj: object,
+	fieldName: F,
+	key: string | number | symbol,
+	...args
+): (...args) => any;
+export default function bind(
+	obj: object,
+	func: string | Function,
+	key: string | number | symbol,
+	...args
 ): (...args) => any {
-	let cache4Function = getCache(obj, fieldName, key);
-	if (!cache4Function) {
-		cache4Function = {};
-		const binded = (obj[fieldName] as any).bind(obj);
-		cache4Function.func = (...callArgs) => {
-			const cachedArgs = args.length ? cache4Function.args : [key];
-			return binded(...cachedArgs, ...callArgs);
-		};
-		setCache(obj, fieldName, key, cache4Function);
+	if (typeof func === 'function') {
+		return bindByFunction(obj, func, key, ...args);
+	} else {
+		return bindByName<any, any>(obj, func, key, ...args);
 	}
-	cache4Function.args = args;
-
-	return cache4Function.func;
-}
-
-function getCache(obj: object, functionName: string | symbol, key: string | number | symbol) {
-	let cache = obj[cachedFunctionFieldName];
-	if (!cache) {
-		// создаем поля для хранения закешированных значений этого объекта
-		obj[cachedFunctionFieldName] = cache = {};
-	}
-
-	let functionsCache = cache[functionName];
-	if (!functionsCache) {
-		// создаем поля для хранения закешированных функций с таким именем
-		cache[functionName] = functionsCache = {};
-	}
-
-	return functionsCache[key];
-}
-
-function setCache(obj: object, functionName: string | symbol, key: string | number | symbol, cachedObj: any) {
-	obj[cachedFunctionFieldName][functionName][key] = cachedObj;
 }
